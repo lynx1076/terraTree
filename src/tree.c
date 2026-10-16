@@ -8,41 +8,54 @@
 #include <stdio.h>
 
 
-#define TREE_MAX_ANGLE        DEG_TO_RAD(45)
+#define TREE_MAX_ANGLE                45
+#define TREE_MAX_THICKNESS            20
+#define TREE_NODE_OFFSET_MULT         12
+#define TREE_MAX_PIXEL_THICKNESS      10
 
 
-void _tree_draw_branch(Vertex* v_base, Vertex* v_branch);
+void _tree_draw_node(Node* base, Node* end);
+Vector2 _get_tree_base(void);
 
+void _tree_draw_node(Node* base, Node* child) {
+  int lines = base->thickness * TREE_MAX_PIXEL_THICKNESS;
 
-void _tree_draw_branch(Vertex* v_base, Vertex* v_branch) {
-  Vector2 windowPosStart = (Vector2){
-    (0.5f + v_base->position.x) * window_width,
-    (1 - v_base->position.y) * window_height
+  Vector2 dir = {
+    .x = cosf(base->rotation),
+    .y = sinf(base->rotation)
   };
 
-  Vector2 windowPosEnd = (Vector2){
-    (0.5f + v_branch->position.x) * window_width,
-    (1 - v_branch->position.y) * window_height
-  };
+  Vector2 left = VEC_MULT(dir, -base->thickness / 2);
+  Vector2 right = VEC_MULT(dir, base->thickness / 2);
 
-  DrawLineV(windowPosStart, windowPosEnd, BROWN);
+  left = VEC_SUB(_get_tree_base(), left);
+  right = VEC_SUB(_get_tree_base(), right);
+
+  DrawCircleV(_get_tree_base(), 6, RED);
+  DrawLineV(left, right, GREEN);
+
+  Vector2 start = VEC_SUB(_get_tree_base(), base->position);
+  Vector2 end = VEC_SUB(_get_tree_base(), child->position);
+
+  DrawLineV(start, end, BLUE);
+}
+
+Vector2 _get_tree_base(void) {
+  return (Vector2){window_width / 2.f, window_height};
 }
 
 int tree_init(Tree* tree) {
   if (!tree) RES_RETURN(r_ENULL_PTR, -1);
-  if (vec_init(&tree->vertices, sizeof(Vertex))) return -1;
+  if (vec_init(&tree->nodes, sizeof(Node))) return -1;
 
-  Vertex base = {
+  Node base = {
     .position = (Vector2){0, 0},
-    .thickness = 10,
-    .rotation = 0
+    .thickness = TREE_MAX_THICKNESS,
+    .rotation = DEG_TO_RAD(90),
+    .children_count = 0,
   };
 
-  for (int i = 0; i < TREE_VERTEX_MAX_CHILDREN; i++) {
-    base.children[i] = 0;
-  }
-
-  if (vec_push(&tree->vertices, &base)) return -1;
+  if (vec_push(&tree->nodes, &base)) return -1;
 
   RES_RETURN(r_ENONE, 0);
 }
@@ -50,66 +63,46 @@ int tree_init(Tree* tree) {
 int tree_draw(Tree* tree) {
   if (!tree) RES_RETURN(r_ENULL_PTR, -1);
 
-  size_t vcount = tree->vertices.count;
+  size_t bcount = tree->nodes.count;
 
-  for (size_t i = 0; i < vcount - 1; i++) {
-    Vertex* v_base = vec_get(&tree->vertices, i);
-    size_t j = 0;
-    while (v_base->children[j] != 0) {
-      Vertex* v_branch = vec_get(&tree->vertices, v_base->children[j]);
-      _tree_draw_branch(v_base, v_branch);
-      j++;
+  for (size_t i = 0; i < bcount; i++) {
+    Node* b = vec_get(&tree->nodes, i);
+    for (size_t j = 0; j < b->children_count; j++) {
+      _tree_draw_node(b, vec_get(&tree->nodes, b->children[j]));
     }
   }
 
   RES_RETURN(r_ENONE, 0);
 }
 
-int tree_add_branch(Tree* tree, size_t id) {
+int tree_add_node(Tree* tree, size_t id) {
   if (!tree) RES_RETURN(r_ENULL_PTR, -1);
   
-  Vertex* v_base = vec_get(&tree->vertices, id);
+  Node* base = vec_get(&tree->nodes, id);
+  if (base->children_count == TREE_MAX_NODE_CHILDREN) RES_RETURN(r_EBUFFER_FULL, -1);
 
-  int child_index = 0;
-  for (; v_base->children[child_index] != 0; child_index++) {
-    if (child_index > TREE_VERTEX_MAX_CHILDREN) RES_RETURN(r_EBUFFER_FULL, -1);
-  }
+  float length = base->thickness * TREE_NODE_OFFSET_MULT * GetRandomFloatRange(0.3f, 0.9f);
 
-  Vertex v_new;
+  float rotationOffset = GetRandomFloatRange(-DEG_TO_RAD(TREE_MAX_ANGLE), DEG_TO_RAD(TREE_MAX_ANGLE));
+  float rotation = base->rotation + rotationOffset;
+  printf("New node with len %f and rot %f rel rot %f\n", length, RAD_TO_DEG(rotation), RAD_TO_DEG(rotationOffset));
 
-  v_new.rotation = GetRandomFloatRange(-TREE_MAX_ANGLE, TREE_MAX_ANGLE);
-  v_new.thickness = GetRandomFloatRange(0.1f, 0.6f);
+  Vector2 dir = {
+    .x = cosf(rotation),
+    .y = sinf(rotation)
+  };
 
-  float length = GetRandomFloatRange(0.03f, 0.3f);
+  Vector2 offset = VEC_MULT(dir, length);
 
-  v_new.position.x = cosf(v_new.rotation + DEG_TO_RAD(90)) * length + v_base->position.x;
-  v_new.position.y = sinf(v_new.rotation + DEG_TO_RAD(90)) * length + v_base->position.y;
+  Node new = {
+    .position = VEC_ADD(base->position, offset),
+    .thickness = base->thickness * GetRandomFloatRange(0.6f, 0.9f),
+    .rotation = rotation,
+    .children_count = 0,
+  };
 
-  for (int i = 0; i < TREE_VERTEX_MAX_CHILDREN; i++) {
-    v_new.children[i] = 0;
-  }
-
-  if (vec_push(&tree->vertices, &v_new)) return -1;
-
-  v_base->children[child_index] = tree->vertices.count - 1;
-
-  RES_RETURN(r_ENONE, 0);
-}
-
-int tree_print(Tree* tree) {
-  if (!tree) RES_RETURN(r_ENULL_PTR, -1);
-
-  for (size_t i = 0; i < tree->vertices.count; i++) {
-    Vertex* v = vec_get(&tree->vertices, i);
-    
-    printf("Vertex: %zu @ %f, %f\n", i, v->position.x, v->position.y);
-
-    for (int j = 0; v->children[j] != 0; j++) {
-      Vertex* child = vec_get(&tree->vertices, v->children[j]);
-      printf("\t->id: %zu @ %f, %f\n", v->children[j], child->position.x, child->position.y);
-    }
-    printf("\n");
-  }
+  base->children[base->children_count++] = tree->nodes.count;
+  if (vec_push(&tree->nodes, &new)) return -1;
 
   RES_RETURN(r_ENONE, 0);
 }
