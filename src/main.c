@@ -1,42 +1,31 @@
 #include <raylib.h>
-#include <stddef.h>
-#include "vector.h"
+#include "tree.h"
 #include "result.h"
 
-typedef struct s_Vertex Vertex;
-
-struct s_Vertex {
-  size_t id;
-  Vector2 position;
-  float normal_direction;
-  float thickness;
-  size_t children;
-};
 
 int window_width = 800;
 int window_height = 600;
 
 char* window_title = "Test";
 
-Vec tree = VEC_EMPTY;
+Tree tree;
 
 int main(int argc, char** argv) {
   (void)argc;
   (void)argv;
 
-  if (vec_init(&tree, sizeof(Vertex))) return _res;
-
-  Vertex base = {
-    .id = 0,
-    .position = (Vector2){0, 0},
-    .normal_direction = 0,
-    .children = 0
-  };
-  if (vec_push(&tree, &base)) return _res;
-
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   InitWindow(window_width, window_height, window_title);
   SetExitKey(KEY_NULL);
+
+  if (tree_init(&tree)) return _res;
+  if (tree_add_branch(&tree, 0)) return _res;
+  if (tree_add_branch(&tree, 1)) return _res;
+  if (tree_add_branch(&tree, 2)) return _res;
+  if (tree_add_branch(&tree, 2)) return _res;
+  if (tree_add_branch(&tree, 1)) return _res;
+
+  tree_print(&tree);
 
   if (!IsWindowReady()) {
     return 0;
@@ -45,7 +34,13 @@ int main(int argc, char** argv) {
   SetTargetFPS(30);
 
   while (!WindowShouldClose()) {
+    window_width = GetScreenWidth();
+    window_height = GetScreenHeight();
+
     BeginDrawing();
+    ClearBackground(WHITE);
+
+    tree_draw(&tree);
 
     EndDrawing();
   }

@@ -12,6 +12,7 @@
   X(r_ENO_DATA) \
   X(r_ENULL_PTR) \
   X(r_EENCODING) \
+  X(r_EBUFFER_FULL) \
   X(r_EMEM) \
   X(r_ESYS) \
   X(r_ETIMEOUT) \
