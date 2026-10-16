@@ -24,11 +24,6 @@ int main(int argc, char** argv) {
   }
 
   if (tree_init(&tree)) return _res;
-  if (tree_add_node(&tree, 0)) return _res;
-  if (tree_add_node(&tree, 1)) return _res;
-  if (tree_add_node(&tree, 2)) return _res;
-  if (tree_add_node(&tree, 2)) return _res;
-  if (tree_add_node(&tree, 1)) return _res;
 
   SetTargetFPS(30);
 
@@ -37,12 +32,14 @@ int main(int argc, char** argv) {
     window_height = GetScreenHeight();
 
     BeginDrawing();
-    ClearBackground(WHITE);
+    ClearBackground(GRAY);
 
     tree_draw(&tree);
 
     EndDrawing();
   }
+
+  tree_deinit(&tree);
 
   return 0;
 }

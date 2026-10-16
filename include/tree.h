@@ -24,7 +24,8 @@ typedef struct {
 
 
 int tree_init(Tree* tree);
+void tree_deinit(Tree* tree);
 int tree_draw(Tree* tree);
-int tree_add_node(Tree* tree, size_t id);
+int tree_add_node(Tree* tree, size_t id, float rotationOffset, float length);
 
 #endif

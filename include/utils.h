@@ -14,6 +14,10 @@
 
 float GetRandomFloat();
 float GetRandomFloatRange(float min, float max);
+float Clampf(float min, float max, float x);
+float Lerpf(float a, float b, float x);
+Vector2 LerpV2(Vector2 a, Vector2 b, float x);
+
 void PrintVector(Vector2 v);
 
 #endif
