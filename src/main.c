@@ -7,7 +7,7 @@
 #include "str.h"
 #include "lsystem.h"
 
-#define ANGLE DEG_TO_RAD(89.11022009)
+#define ANGLE DEG_TO_RAD(89)
 
 int window_width = 800;
 int window_height = 600;
@@ -24,10 +24,10 @@ int main(int argc, char** argv) {
   LSystem lsys;
   if (lsys_init(&lsys)) return _res;
 
-  if (lsys_add_cstr_rule(&lsys, 'X', "X+YF+")) return _res;
-  if (lsys_add_cstr_rule(&lsys, 'Y', "-FX-Y")) return _res;
+  if (lsys_add_cstr_rule(&lsys, 'X', "X+YF+")) return _res; // Rule 1: X => X+YF+
+  if (lsys_add_cstr_rule(&lsys, 'Y', "-FX-Y")) return _res; // Rule 2: Y => -FX-Y
 
-  if (str_ccpy(&lsys.axiom, "FX")) return _res;
+  if (str_ccpy(&lsys.axiom, "FX")) return _res; // Axiom
   if (lsys_reset(&lsys)) return _res;
 
   if (lsys_advance(&lsys, 19)) return -1;
