@@ -62,7 +62,6 @@ void* vec_get(Vec* vec, size_t index);
 
 /**
  * Sets the count to 0
- * The capacity updating funciton is called afterwards
  */
 int vec_clear(Vec* vec);
 

@@ -1,4 +1,4 @@
-PROJNAME = easyCUI
+PROJNAME = terraTree
 VERSION = 0.1
 
 CC = gcc
