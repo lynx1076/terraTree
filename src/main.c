@@ -7,6 +7,7 @@
 #include "str.h"
 #include "lsystem.h"
 
+#define ANGLE DEG_TO_RAD(89.11022009)
 
 int window_width = 800;
 int window_height = 600;
@@ -23,18 +24,14 @@ int main(int argc, char** argv) {
   LSystem lsys;
   if (lsys_init(&lsys)) return _res;
 
-  if (lsys_add_cstr_rule(&lsys, 'X', "F+[[X]-X]-F[-FX]+X")) return _res;
-  if (lsys_add_cstr_rule(&lsys, 'F', "FF")) return _res;
+  if (lsys_add_cstr_rule(&lsys, 'X', "X+YF+")) return _res;
+  if (lsys_add_cstr_rule(&lsys, 'Y', "-FX-Y")) return _res;
 
-  if (str_ccpy(&lsys.axiom, "X")) return _res;
+  if (str_ccpy(&lsys.axiom, "FX")) return _res;
   if (lsys_reset(&lsys)) return _res;
 
-  for (int i = 0; i < 6; i++) {
-    if (str_cstr(&lsys.state)) return _res;
-    printf("State [%zu] (%zu): %s\n", lsys.iteration, lsys.state.length, lsys.state.text);
-
-    if (lsys_advance(&lsys, 1)) return -1;
-  }
+  if (lsys_advance(&lsys, 19)) return -1;
+  printf("Moves: %zu\n", lsys.state.length);
 
   SetTraceLogLevel(LOG_ERROR);
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
@@ -50,7 +47,7 @@ int main(int argc, char** argv) {
     return 0;
   }
 
-  if (turtle_init(&turtle, (TurtleTransform){{0, 0}, DEG_TO_RAD(-90)})) return _res;
+  if (turtle_init(&turtle, (TurtleTransform){{0, -200}, DEG_TO_RAD(-90)})) return _res;
   if (turtle_show(&turtle, false)) return _res;
 
   turtle.color = GREEN;
@@ -67,13 +64,11 @@ int main(int argc, char** argv) {
         if (turtle_pop(&turtle)) return _res;
       } break;
       case '+': {
-        if (turtle_rotate(&turtle, DEG_TO_RAD(25))) return _res;
+        if (turtle_rotate(&turtle, ANGLE)) return _res;
       } break;
       case '-': {
-        if (turtle_rotate(&turtle, -DEG_TO_RAD(25))) return _res;
+        if (turtle_rotate(&turtle, -ANGLE)) return _res;
       } break;
-
-      case 'X':
       default: break;
     }
   }
@@ -84,6 +79,13 @@ int main(int argc, char** argv) {
     window_width = GetScreenWidth();
     window_height = GetScreenHeight();
     camera.offset = (Vector2){window_width / 2.f, window_height / 1.f};
+
+    camera.zoom *= (1 - GetMouseWheelMove() / 2);
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))  {
+      Vector2 move = VEC_MULT(GetMouseDelta(), 1 / camera.zoom);
+      camera.target = VEC_SUB(camera.target, move);
+    }
     
     BeginDrawing();
     ClearBackground(WHITE);
