@@ -7,7 +7,7 @@
 #include "str.h"
 #include "lsystem.h"
 
-#define ANGLE DEG_TO_RAD(89)
+#define ANGLE DEG_TO_RAD(90)
 
 int window_width = 800;
 int window_height = 600;
@@ -85,6 +85,11 @@ int main(int argc, char** argv) {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))  {
       Vector2 move = VEC_MULT(GetMouseDelta(), 1 / camera.zoom);
       camera.target = VEC_SUB(camera.target, move);
+    }
+
+    if (IsKeyPressed(KEY_SPACE)) {
+      camera.zoom = 1.0;
+      camera.target = (Vector2){0, 0};
     }
     
     BeginDrawing();
