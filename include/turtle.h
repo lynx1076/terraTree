@@ -5,6 +5,7 @@
 #include <raylib.h>
 #include <stdbool.h>
 #include "vector.h"
+#include "lsystem.h"
 
 typedef enum {
   TInT_None,
@@ -32,6 +33,9 @@ typedef struct {
   Color color;
   float thickness;
 
+  float stepsize;
+  float angle;
+
   Vec instructions;
   Vec transforms;
 
@@ -40,6 +44,12 @@ typedef struct {
 
   bool showTurtle;
   size_t currentStep;
+
+  char forward;
+  char push;
+  char pop;
+  char left;
+  char right;
 } Turtle;
 
 int turtle_init(Turtle* turtle, TurtleTransform startTransform);
@@ -58,5 +68,7 @@ int turtle_draw(Turtle* turtle);
 int turtle_draw_step(Turtle* turtle);
 int turtle_drawing_reset(Turtle* turtle);
 bool turtle_is_drawing(Turtle* turtle);
+
+int turtle_update(Turtle* turtle, const LSystem* lsys);
 
 #endif

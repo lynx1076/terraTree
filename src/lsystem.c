@@ -1,5 +1,7 @@
 #include "lsystem.h"
 #include "result.h"
+#include "str.h"
+#include "vector.h"
 #include <stddef.h>
 
 
@@ -60,6 +62,17 @@ int lsys_add_cstr_rule(LSystem* lsys, char pattern, char* replacement) {
   if (str_init_cstr(&lrule.replacement, replacement)) return -1;
 
   if (vec_push(&lsys->rules, &lrule)) return -1;
+
+  RES_RETURN(r_ENONE, 0);
+}
+
+int lsys_remove_rule(LSystem* lsys, size_t ruleIndex) {
+  if (!lsys) RES_RETURN(r_ENULL_PTR, -1);
+
+  LSystemRule rule;
+  if (vec_pop_at(&lsys->rules, ruleIndex, &rule)) return -1;
+  
+  str_free(&rule.replacement);
 
   RES_RETURN(r_ENONE, 0);
 }

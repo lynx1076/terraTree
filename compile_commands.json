@@ -1,23 +1,24 @@
 [
   {
-    "file": "src/easyCUI.c",
+    "file": "src/gui.c",
     "arguments": [
       "/usr/bin/gcc",
       "-Wall",
       "-Wextra",
       "-g",
       "-O0",
-      "-DVERSION=0.1",
+      "-DVERSION=\"0.1\"",
       "-Iinclude",
+      "-Ilib/microui",
       "-MMD",
       "-MP",
       "-c",
-      "src/easyCUI.c",
+      "src/gui.c",
       "-o",
-      ".build/easyCUI.o"
+      ".build/src/gui.o"
     ],
-    "directory": "/home/lynx/easyCUI",
-    "output": ".build/easyCUI.o"
+    "directory": "/home/lynx/terraTree",
+    "output": ".build/src/gui.o"
   },
   {
     "file": "src/main.c",
@@ -27,16 +28,143 @@
       "-Wextra",
       "-g",
       "-O0",
-      "-DVERSION=0.1",
+      "-DVERSION=\"0.1\"",
       "-Iinclude",
+      "-Ilib/microui",
       "-MMD",
       "-MP",
       "-c",
       "src/main.c",
       "-o",
-      ".build/main.o"
+      ".build/src/main.o"
     ],
-    "directory": "/home/lynx/easyCUI",
-    "output": ".build/main.o"
+    "directory": "/home/lynx/terraTree",
+    "output": ".build/src/main.o"
+  },
+  {
+    "file": "src/rmu.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-O0",
+      "-DVERSION=\"0.1\"",
+      "-Iinclude",
+      "-Ilib/microui",
+      "-MMD",
+      "-MP",
+      "-c",
+      "src/rmu.c",
+      "-o",
+      ".build/src/rmu.o"
+    ],
+    "directory": "/home/lynx/terraTree",
+    "output": ".build/src/rmu.o"
+  },
+  {
+    "file": "src/str.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-O0",
+      "-DVERSION=\"0.1\"",
+      "-Iinclude",
+      "-Ilib/microui",
+      "-MMD",
+      "-MP",
+      "-c",
+      "src/str.c",
+      "-o",
+      ".build/src/str.o"
+    ],
+    "directory": "/home/lynx/terraTree",
+    "output": ".build/src/str.o"
+  },
+  {
+    "file": "src/turtle.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-O0",
+      "-DVERSION=\"0.1\"",
+      "-Iinclude",
+      "-Ilib/microui",
+      "-MMD",
+      "-MP",
+      "-c",
+      "src/turtle.c",
+      "-o",
+      ".build/src/turtle.o"
+    ],
+    "directory": "/home/lynx/terraTree",
+    "output": ".build/src/turtle.o"
+  },
+  {
+    "file": "src/utils.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-O0",
+      "-DVERSION=\"0.1\"",
+      "-Iinclude",
+      "-Ilib/microui",
+      "-MMD",
+      "-MP",
+      "-c",
+      "src/utils.c",
+      "-o",
+      ".build/src/utils.o"
+    ],
+    "directory": "/home/lynx/terraTree",
+    "output": ".build/src/utils.o"
+  },
+  {
+    "file": "src/vector.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-O0",
+      "-DVERSION=\"0.1\"",
+      "-Iinclude",
+      "-Ilib/microui",
+      "-MMD",
+      "-MP",
+      "-c",
+      "src/vector.c",
+      "-o",
+      ".build/src/vector.o"
+    ],
+    "directory": "/home/lynx/terraTree",
+    "output": ".build/src/vector.o"
+  },
+  {
+    "file": "lib/microui/microui.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-O0",
+      "-DVERSION=\"0.1\"",
+      "-Iinclude",
+      "-Ilib/microui",
+      "-MMD",
+      "-MP",
+      "-c",
+      "lib/microui/microui.c",
+      "-o",
+      ".build/lib/microui/microui.o"
+    ],
+    "directory": "/home/lynx/terraTree",
+    "output": ".build/lib/microui/microui.o"
   }
 ]

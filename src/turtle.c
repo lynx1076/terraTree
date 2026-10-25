@@ -1,4 +1,5 @@
 #include "turtle.h"
+#include "lsystem.h"
 #include "result.h"
 #include "utils.h"
 #include <math.h>
@@ -137,8 +138,8 @@ int turtle_draw_step(Turtle* turtle) {
     case TInT_MoveNoDraw:
     case TInT_Move: {
       Vector2 dir = {
-        cosf(turtle->transform.rotation),
-        sinf(turtle->transform.rotation)
+        cosf(DEG_TO_RAD(turtle->transform.rotation)),
+        sinf(DEG_TO_RAD(turtle->transform.rotation))
       };
       Vector2 delta = VEC_MULT(dir, instruction->length);
       Vector2 newPos = VEC_ADD(turtle->transform.position, delta);
@@ -178,5 +179,28 @@ bool turtle_is_drawing(Turtle* turtle) {
   if (!turtle) return false;
 
   return turtle->currentStep >= turtle->instructions.count;
+}
+
+int turtle_update(Turtle* turtle, const LSystem* lsys) {
+  if (turtle_reset(turtle)) return -1;
+  for (size_t i = 0; i < lsys->state.length; i++) {
+    if (lsys->state.text[i] == turtle->forward) {
+      if (turtle_move(turtle, turtle->stepsize, true)) return -1;
+    } 
+    if (lsys->state.text[i] == turtle->push) {
+      if (turtle_push(turtle)) return -1;
+    } 
+    if (lsys->state.text[i] == turtle->pop) {
+      if (turtle_pop(turtle)) return -1;
+    } 
+    if (lsys->state.text[i] == turtle->right) {
+      if (turtle_rotate(turtle, turtle->angle)) return -1;
+    } 
+    if (lsys->state.text[i] == turtle->left) {
+      if (turtle_rotate(turtle, -turtle->angle)) return -1;
+    }
+  }
+
+  RES_RETURN(r_ENONE, 0);
 }
 

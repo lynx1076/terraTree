@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <stddef.h>
 #include <stdio.h>
+#include "gui.h"
 #include "utils.h"
 #include "turtle.h"
 #include "result.h"
@@ -30,7 +31,7 @@ int main(int argc, char** argv) {
   if (str_ccpy(&lsys.axiom, "FX")) return _res; // Axiom
   if (lsys_reset(&lsys)) return _res;
 
-  if (lsys_advance(&lsys, 19)) return -1;
+  if (lsys_advance(&lsys, 10)) return -1;
   printf("Moves: %zu\n", lsys.state.length);
 
   SetTraceLogLevel(LOG_ERROR);
@@ -47,33 +48,23 @@ int main(int argc, char** argv) {
     return 0;
   }
 
-  if (turtle_init(&turtle, (TurtleTransform){{0, -200}, DEG_TO_RAD(-90)})) return _res;
+  if (turtle_init(&turtle, (TurtleTransform){{0, -200}, -90})) return _res;
   if (turtle_show(&turtle, false)) return _res;
 
   turtle.color = GREEN;
+  turtle.stepsize = 10;
+  turtle.angle = 90;
 
-  for (size_t i = 0; i < lsys.state.length; i++) {
-    switch (lsys.state.text[i]) {
-      case 'F': {
-        if (turtle_move(&turtle, 10, true)) return _res;
-      } break;
-      case '[': {
-        if (turtle_push(&turtle)) return _res;
-      } break;
-      case ']': {
-        if (turtle_pop(&turtle)) return _res;
-      } break;
-      case '+': {
-        if (turtle_rotate(&turtle, ANGLE)) return _res;
-      } break;
-      case '-': {
-        if (turtle_rotate(&turtle, -ANGLE)) return _res;
-      } break;
-      default: break;
-    }
-  }
+  turtle.forward = 'F';
+  turtle.left = '-';
+  turtle.right = '+';
+  turtle.push = '[';
+  turtle.pop = ']';
+
+  if (turtle_update(&turtle, &lsys)) return _res;
 
   SetTargetFPS(30);
+  if (gui_init()) return _res;
 
   while (!WindowShouldClose()) {
     window_width = GetScreenWidth();
@@ -98,6 +89,8 @@ int main(int argc, char** argv) {
     BeginMode2D(camera);
     if (turtle_draw(&turtle)) return _res;
     EndMode2D();
+
+    gui_update(&lsys, &turtle);
 
     EndDrawing();
   }

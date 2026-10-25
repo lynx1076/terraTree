@@ -22,6 +22,7 @@ void lsys_free(LSystem* lsys);
 
 int lsys_add_rule(LSystem* lsys, char pattern, Str* replacement);
 int lsys_add_cstr_rule(LSystem* lsys, char pattern, char* replacement);
+int lsys_remove_rule(LSystem* lsys, size_t ruleIndex);
 
 int lsys_advance(LSystem* lsys, size_t steps);
 int lsys_reset(LSystem* lsys);
