@@ -185,7 +185,7 @@ int gui_update(LSystem* lsys, Turtle* turtle) {
     mu_label(&ctx, TextFormat("L-System length: %zu", lsys->state.length));
     mu_layout_row(&ctx, 2, (int[]) { FONT_SIZE * 14, -1 }, 0);
     mu_label(&ctx, "L-System memory usage: ");
-    mu_label(&ctx, format_bytes(lsys->state.capacity));
+    mu_label(&ctx, format_bytes(lsys->state.length));
 
     mu_end_window(&ctx);
   }
