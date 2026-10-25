@@ -1,5 +1,39 @@
-A simple (sadly unfinished :(   ) L-System plotter.
+A simple L-System plotter
 
-Sadly I did not have time to set up a UI so if you'd like to try some L-Systems you'll have to mess around in the code. Anything you do want to change/test is likely in the main.c file so check there first.
+UI UPDATE!!!!
 
 Made for hackClub terra 26/27
+
+### How to use:
+
+Click and drag to explore the plot.
+Hit space to reset the view.
+Zoom using your mouse wheel.
+
+### Explanation
+
+This project consists of an L-System calculator and a graphics turtle.
+
+An L-System takes a set of rules and applies them to a an axiom (starting string).
+This results in a state like this:
+
+Axiom: A
+Rules:
+-> A => AB
+-> B => A
+
+0: A
+1: AB
+2: ABA
+3: ABAAB
+
+The turtle will take the current state
+and use rules to plot it out on the screen:
+
+A => Forward
+B => Turn left 20°
+
+This results in some really funky and organic looking structures.
+These L-Systems get very large, very quickly (usually double their size about every iteration)
+so be mindful of that when plotting past 15 iterations.
+
